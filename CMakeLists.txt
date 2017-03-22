@@ -11,10 +11,13 @@ set(CMAKE_C_FLAGS_DEBUG "-O0 -ggdb3 -DEVOASM_LOG_LEVEL=EVOASM_LOG_LEVEL_DEBUG")
 set(CMAKE_C_STANDARD 11)
 
 #add_definitions("-DEVOASM_ENABLE_PARANOID_MODE")
+#INCLUDE_DIRECTORIES(./thirds)
 
-include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src thirds/capstone/include/)
+#SET(CMAKE_LIBRARY_PATH  ./thirds/capstone/)
+FIND_LIBRARY(LIB_CAPSTONE libcapstone.so ./thirds/capstone/)
 
-set(SOURCE_FILES
+set(LIB_SOURCE_FILES
         src/evoasm-alloc.c
         src/evoasm-alloc.h
         src/evoasm-arch.c
@@ -53,6 +56,11 @@ set(SOURCE_FILES
         src/evoasm-program-io.c
         src/evoasm-program-io.h)
 
+set(BIN_SOURCE_FILES
+	src/evoasm_lib.h
+        src/alpha.c)
+
+
 find_package(Threads)
 find_package(OpenMP REQUIRED)
 if(OPENMP_FOUND)
@@ -60,6 +68,8 @@ if(OPENMP_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-add_library(evoasm SHARED ${SOURCE_FILES})
+add_library(evoasm SHARED ${LIB_SOURCE_FILES})
+#add_library(evoasm SHARED ${SOURCE_FILES})
 target_link_libraries(evoasm ${CMAKE_THREAD_LIBS_INIT})
-
+add_executable(alpha ${BIN_SOURCE_FILES})
+target_link_libraries(alpha evoasm  ${LIB_CAPSTONE})

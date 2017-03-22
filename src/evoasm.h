@@ -33,3 +33,7 @@
 #include "evoasm-arch.h"
 #include "evoasm-error.h"
 
+extern void
+evoasm_init(int argc, const char **argv, FILE *log_file);
+
+

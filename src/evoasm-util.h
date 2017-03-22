@@ -112,3 +112,4 @@
 
 #define EVOASM_CB_CONTINUE true
 #define EVOASM_CB_STOP false
+#define  _Thread_local  __thread
